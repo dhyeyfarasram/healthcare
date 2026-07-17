@@ -1,0 +1,20 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+patients.access_patient_visit_user,access.patient.visit.user,model_patient_visit,base.group_user,0,0,0,0
+patients.access_patient_visit_administrator,access.patient.visit.administrator,model_patient_visit,patients.group_patient_administrator,1,1,1,1
+patients.access_patient_visit_doctor,access.patient.visit.doctor,model_patient_visit,patients.group_patient_doctor,1,1,0,0
+patients.access_patient_visit_desk_person,access.patient.visit.desk_person,model_patient_visit,patients.group_patient_desk_person,1,1,1,0
+patients.access_patient_visit_portal,access.patient.visit.portal,model_patient_visit,base.group_portal,1,0,0,0
+
+patients.access_patient_prescription_line_user,access.patient.prescription.line.user,model_patient_prescription_line,base.group_user,1,0,0,0
+patients.access_patient_prescription_administrator,access.patient.prescription.administrator,model_patient_prescription_line,patients.group_patient_administrator,1,1,1,1
+patients.access_patient_prescription_doctor,access.patient.prescription.doctor,model_patient_prescription_line,patients.group_patient_doctor,1,1,1,1
+patients.access_patient_prescription_desk_person,access.patient.prescription.desk_person,model_patient_prescription_line,patients.group_patient_desk_person,1,0,0,0
+patients.access_patient_prescription_portal,access.patient.prescription.portal,model_patient_prescription_line,base.group_portal,1,0,0,0
+
+access_patient_followup,patient.followup,model_patient_followup,patients.group_patient_administrator,1,1,1,1
+access_patient_followup_doctor,patient.followup doctor,model_patient_followup,patients.group_patient_doctor,1,1,1,0
+access_patient_followup_desk,patient.followup desk,model_patient_followup,patients.group_patient_desk_person,1,1,1,0
+
+access_doctor_department_admin,doctor.department admin,model_doctor_department,patients.group_patient_administrator,1,1,1,1
+access_doctor_department_user,doctor.department user,model_doctor_department,base.group_user,1,0,0,0

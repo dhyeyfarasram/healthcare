@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Top-level category -->
+        <record id="module_category_patients" model="ir.module.category">
+            <field name="name">Patients</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="patients_privilege" model="res.groups.privilege">
+            <field name="name">Patients</field>
+            <field name="sequence">20</field>
+            <field name="category_id" ref="module_category_patients"/>
+        </record>
+
+        <!-- 1. Desk Person – base role (lowest) -->
+        <record id="group_patient_desk_person" model="res.groups">
+            <field name="name">Desk Person</field>
+            <field name="privilege_id" ref="patients_privilege"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <!-- 2. Doctor – implies Desk Person -->
+        <record id="group_patient_doctor" model="res.groups">
+            <field name="name">Doctor</field>
+            <field name="privilege_id" ref="patients_privilege"/>
+            <field name="implied_ids" eval="[(4, ref('patients.group_patient_desk_person'))]"/>
+        </record>
+
+        <!-- 3. HealthCare Administrator – implies Doctor (and transitively Desk Person) -->
+        <record id="group_patient_administrator" model="res.groups">
+            <field name="name">HealthCare Administrator</field>
+            <field name="privilege_id" ref="patients_privilege"/>
+            <field name="implied_ids" eval="[(4, ref('patients.group_patient_doctor'))]"/>
+        </record>
+
+
+    </data>
+</odoo>

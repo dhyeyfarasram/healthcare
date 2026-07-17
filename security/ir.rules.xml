@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Portal: patients see only their own visits -->
+        <record id="patient_visit_portal_rule" model="ir.rule">
+            <field name="name">Patient Visit – Portal Access</field>
+            <field name="model_id" ref="model_patient_visit"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[('patient_id', '=', user.partner_id.id)]</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">0</field>
+            <field name="perm_create">0</field>
+            <field name="perm_unlink">0</field>
+        </record>
+
+        <!-- Doctor: sees only visits assigned to them -->
+        <record id="patient_visit_doctor_rule" model="ir.rule">
+            <field name="name">Patient Visit – Doctor sees own visits</field>
+            <field name="model_id" ref="model_patient_visit"/>
+            <field name="groups" eval="[(4, ref('patients.group_patient_doctor'))]"/>
+            <field name="domain_force">[('doctor_id', '=', user.id)]</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">0</field>
+            <field name="perm_unlink">0</field>
+        </record>
+
+        <!-- Administrator: global access -->
+        <record id="patient_visit_admin_rule" model="ir.rule">
+            <field name="name">Patient Visit – Administrator global access</field>
+            <field name="model_id" ref="model_patient_visit"/>
+            <field name="groups" eval="[(4, ref('patients.group_patient_administrator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_unlink">1</field>
+        </record>
+
+        <!-- Desk Person: global read/create -->
+        <record id="patient_visit_desk_rule" model="ir.rule">
+            <field name="name">Patient Visit – Desk Person global read/create</field>
+            <field name="model_id" ref="model_patient_visit"/>
+            <field name="groups" eval="[(4, ref('patients.group_patient_desk_person'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_unlink">0</field>
+        </record>
+
+</odoo>

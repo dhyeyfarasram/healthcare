@@ -1,0 +1,64 @@
+<odoo>
+
+    <!-- ============================================================
+         Partner Form: Medical History Tab
+    ============================================================ -->
+    <record id="view_partner_form_medical_history" model="ir.ui.view">
+        <field name="name">res.partner.form.medical.history</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Medical History" invisible="not is_patient"
+                      groups="patients.group_patient_administrator,patients.group_patient_doctor,patients.group_patient_desk_person">
+                    <group string="Basic Information">
+                        <field name="blood_group"/>
+                    </group>
+                    <group string="Conditions &amp; Allergies">
+                        <field name="allergies"
+                               placeholder="e.g. Penicillin, Peanuts, Dust mites..."/>
+                        <field name="chronic_conditions"
+                               placeholder="e.g. Diabetes Type 2, Hypertension, Asthma..."/>
+                        <field name="current_medications"
+                               placeholder="e.g. Metformin 500mg daily, Lisinopril 10mg..."/>
+                    </group>
+                    <group string="Additional Notes">
+                        <field name="medical_notes" nolabel="1"
+                               placeholder="Any other relevant medical history..."/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ============================================================
+         Visit Form: Patient Medical Summary (visible to doctor)
+    ============================================================ -->
+<record id="view_patient_visit_form_medical" model="ir.ui.view">
+    <field name="name">patient.visit.form.medical.summary</field>
+    <field name="model">patient.visit</field>
+    <field name="inherit_id" ref="patients.view_patient_visit_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//sheet" position="inside">
+            <notebook>
+                <page string="Patient Medical Summary"
+                      groups="patients.group_patient_administrator,patients.group_patient_doctor">
+                    <group string="Medical Profile">
+                        <field name="patient_blood_group" readonly="1"/>
+                        <field name="patient_allergies" readonly="1"/>
+                        <field name="patient_chronic_conditions" readonly="1"/>
+                        <field name="patient_current_medications" readonly="1"/>
+                    </group>
+                    <group string="Last Visit Summary">
+                        <field name="patient_last_visit_summary"
+                               readonly="1"
+                               nolabel="1"
+                               widget="text"/>
+                    </group>
+                </page>
+            </notebook>
+        </xpath>
+    </field>
+</record>
+
+</odoo>

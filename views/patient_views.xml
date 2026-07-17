@@ -1,0 +1,258 @@
+<odoo>
+    <record id="view_partner_form_inherit_patient" model="ir.ui.view">
+    <field name="name">res.partner.form.patient</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="base.view_partner_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//div[contains(@class,'oe_button_box')]" position="inside">
+
+            <!-- Only Admin & Desk Person see Payments button -->
+            <button name="action_view_payments" type="object"
+                    class="oe_stat_button" icon="fa-money"
+                    groups="patients.group_patient_administrator,patients.group_patient_desk_person">
+                <field name="payment_count" widget="statinfo" string="Payments"/>
+            </button>
+
+            <!-- Only Admin & Desk Person see Visits button -->
+            <button name="action_view_visit" type="object"
+                    class="oe_stat_button" icon="fa-calendar"
+                    groups="patients.group_patient_administrator,patients.group_patient_desk_person">
+                <field name="visit_count" widget="statinfo"/>
+            </button>
+
+        </xpath>
+    </field>
+    </record>
+    <record id="view_patient_visit_form" model="ir.ui.view">
+    <field name="name">patient.visit.form</field>
+    <field name="model">patient.visit</field>
+    <field name="arch" type="xml">
+        <form string="Patient Visit">
+            <header>
+                <button name="action_schedule"
+                        type="object"
+                        string="Schedule"
+                        class="btn-primary"
+                        invisible="state in ('completed')"
+                        groups="patients.group_patient_administrator,patients.group_patient_desk_person"/>
+
+                <button name="action_complete"
+                        type="object"
+                        string="Complete"
+                        class="btn-primary"
+                        invisible="state != 'scheduled'"
+                        groups="patients.group_patient_administrator,patients.group_patient_desk_person"/>
+
+                 <button name="action_cancel"
+                        type="object"
+                        string="Cancel"
+                        class="btn-danger"
+                        invisible="state in ('completed', 'cancelled')"
+                        groups="patients.group_patient_administrator,patients.group_patient_desk_person"
+                        confirm="Are you sure you want to cancel this visit?"/>
+
+                <button name="%(action_report_patient_visit)d"
+                        type="action"
+                        string="Print Receipt"
+                        class="btn-secondary"/>
+
+
+
+                <field name="state" widget="statusbar"/>
+            </header>
+
+            <sheet >
+                <group>
+                    <field name="name" readonly="1"/>
+                    <field name="patient_id"
+                           readonly="is_locked"
+                           groups="patients.group_patient_administrator,patients.group_patient_desk_person,patients.group_patient_doctor"/>
+                    <field name="doctor_id" readonly="is_locked"/>
+                    <field name="visit_date"
+                    options="{'datepicker': {'minDate': '0d'}}"
+                    readonly="is_locked"/>
+                    <field name="visit_time" readonly="is_locked" required="1"/>
+                </group>
+
+                <group>
+                    <field name="prescription_line_ids" readonly="is_locked_scheduled"/>
+
+                        <field name="notes" readonly="is_locked"/>
+                        <field name="followup_ids" readonly="is_locked_scheduled">
+                                <list editable="bottom">
+                                    <field name="followup_date"/>
+                                    <field name="notes"/>
+                                    <field name="state"
+                                           widget="badge"
+                                           decoration-success="state == 'done'"
+                                           decoration-warning="state == 'pending'"
+                                           decoration-danger="state == 'cancelled'"/>
+                                </list>
+                        </field>
+                        <!-- Payment fields: Admin & Desk only -->
+                        <field name="is_paid"
+                               groups="patients.group_patient_administrator,patients.group_patient_desk_person"
+                               required="1"
+                               readonly="is_locked"/>
+                        <field name="token_amount"
+                               readonly="is_locked"
+                               groups="patients.group_patient_administrator,patients.group_patient_desk_person"/>
+                        <field name="payment_reference"
+                               readonly="is_locked"
+                               groups="patients.group_patient_administrator,patients.group_patient_desk_person"/>
+
+                </group>
+            </sheet>
+            <chatter/>
+        </form>
+    </field>
+</record>
+
+        <!-- Form Views -->
+<record id="view_partner_form_visit_tab" model="ir.ui.view">
+    <field name="name">res.partner.form.visit.tab</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="base.view_partner_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//notebook" position="inside">
+            <page string="Visits" invisible="not is_patient">
+                <field name="visit_ids">
+                    <list editable="bottom">
+                        <field name="name"/>
+                        <field name="visit_date"/>
+                        <field name="doctor_id"/>
+                        <field name="state"/>
+
+                    </list>
+                </field>
+            </page>
+        </xpath>
+    </field>
+</record>
+<record id="view_partner_form_inherit_patient" model="ir.ui.view">
+        <field name="name">res.partner.form.patient</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+        <xpath expr="//div[contains(@class,'oe_button_box')]" position="inside">
+            <button name="action_view_payments" type="object" class="oe_stat_button" icon="fa-money">
+                <field name="payment_count" widget="statinfo" string="Payments"/>
+            </button>
+            <button name="action_view_visit" type="object" class="oe_stat_button" icon="fa-calendar">
+                <field name="visit_count" widget="statinfo"/>
+            </button>
+
+        </xpath>
+        </field>
+</record>
+        <!-- Kanban Views -->
+<record id="view_patient_visit_kanban" model="ir.ui.view">
+        <field name="name">patient.visit.kanban</field>
+        <field name="model">patient.visit</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_example" quick_create="true">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="visit_date"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card">
+                            <div class="oe_kanban_details">
+                                <strong>
+                                    <b>Visit:</b>
+                                    <field name="name"/>
+                                </strong>
+                                <div>
+                                    <b>Patient:</b>
+                                    <field name="patient_id"/>
+                                </div>
+                                <div>
+                                    <b>Doctor:</b>
+                                    <field name="doctor_id"/>
+                                </div>
+                                <div>
+                                    <b>Date:</b>
+                                    <field name="visit_date"/>
+                                </div>
+                                <div>
+                                    <b>Status:</b>
+                                    <field name="state"/>
+                                </div>
+                            </div>
+
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+</record>
+
+    <!-- List Views -->
+        <record id="patient_visit_list_view" model="ir.ui.view">
+        <field name="name">patient.visit.list</field>
+        <field name="model">patient.visit</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="visit_date"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="patient_visit_list" model="ir.actions.act_window">
+        <field name="name">Patient Visits</field>
+        <field name="res_model">patient.visit</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'no_create_edit': True}</field>
+    </record>
+
+    <!-- Prescription List -->
+<record id="view_patient_prescription_list" model="ir.ui.view">
+    <field name="name">patient.prescription.list</field>
+    <field name="model">patient.prescription.line</field>
+    <field name="arch" type="xml">
+        <list>
+            <field name="visit_id"/>
+            <field name="medicine_id"/>
+            <field name="dosage"/>
+        </list>
+    </field>
+</record>
+
+<!-- Prescription Form -->
+<record id="view_patient_prescription_form" model="ir.ui.view">
+    <field name="name">patient.prescription.form</field>
+    <field name="model">patient.prescription.line</field>
+    <field name="arch" type="xml">
+        <form string="Prescription">
+            <sheet>
+                <group>
+                    <field name="visit_id"/>
+                    <field name="medicine_id"/>
+                    <field name="dosage"/>
+                    <field name="instructions"/>
+                </group>
+            </sheet>
+        </form>
+    </field>
+</record>
+
+    <record id="patient_prescription" model="ir.actions.act_window">
+        <field name="name">Prescriptions</field>
+        <field name="res_model">patient.prescription.line</field>
+        <field name="view_mode">list,form</field>
+    </record>
+<record id="seq_patient_visit" model="ir.sequence">
+    <field name="name">Patient Visit</field>
+    <field name="code">patient.visit</field>
+    <field name="prefix">VIS/%(year)s/</field>
+    <field name="padding">4</field>
+    <field name="number_next">1</field>
+    <field name="number_increment">1</field>
+</record>
+
+</odoo>

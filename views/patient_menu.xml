@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_healthcare_root"
+              name="Healthcare"
+              sequence="10"
+              groups="patients.group_patient_administrator,patients.group_patient_doctor,patients.group_patient_desk_person"/>
+
+    <menuitem id="menu_patient_visits"
+              name="Patient Visits"
+              parent="menu_healthcare_root"
+              action="patient_visit_list"
+              sequence="20"
+              groups="patients.group_patient_administrator,patients.group_patient_doctor,patients.group_patient_desk_person"/>
+
+    <menuitem id="menu_patient_prescriptions"
+              name="Prescriptions"
+              parent="menu_healthcare_root"
+              action="patient_prescription"
+              sequence="30"
+              groups="patients.group_patient_administrator,patients.group_patient_doctor"/>
+
+    <menuitem id="menu_patient_configuration"
+              name="Configuration"
+              parent="menu_healthcare_root"
+              sequence="100"
+              groups="patients.group_patient_administrator"/>
+
+    <menuitem id="menu_doctor_department"
+              name="Departments"
+              parent="menu_patient_configuration"
+              action="patients.action_doctor_department"
+              sequence="10"
+              groups="patients.group_patient_administrator"/>
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ir_cron_check_past_appointments" model="ir.cron">
+        <field name="name">Patient Visits: Check Past Date Appointments</field>
+        <field name="model_id" ref="model_patient_visit"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_check_past_appointments()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+    <record id="ir_cron_cancel_unpaid_visits" model="ir.cron">
+    <field name="name">Patient Visits: Auto-cancel Unpaid Visits</field>
+    <field name="model_id" ref="model_patient_visit"/>
+    <field name="state">code</field>
+    <field name="code">model._cron_cancel_unpaid_visits()</field>
+    <field name="interval_number">30</field>
+    <field name="interval_type">minutes</field>
+    <field name="active">True</field>
+</record>
+</odoo>
